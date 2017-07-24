@@ -92,8 +92,8 @@ sbtree<T, Alloc>::~sbtree () {
 	root = NULL;
 }
 
-//	    cur: x                                    cur: y
-//        x	                                        y
+//      cur: x                                    cur: y
+//        x                                         y
 //       / \     ------------>rightRotate          / \
 //      y   c                                     a   x
 //     / \       leftRotate<-------------            / \
