@@ -93,7 +93,7 @@ sbtree<T, Alloc>::~sbtree () {
 }
 
 //	    cur: x                                    cur: y
-//	      x	                                        y
+//        x	                                        y
 //       / \     ------------>rightRotate          / \
 //      y   c                                     a   x
 //     / \       leftRotate<-------------            / \
