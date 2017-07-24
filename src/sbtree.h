@@ -93,12 +93,12 @@ sbtree ::~sbtree () {
 	root = NULL;
 }
 
-//		cur: x									  cur: y
-//		  x											y
+//		cur: x                                    cur: y
+//		  x	                                        y
 //		 / \     ------------>rightRotate		   / \
-//		y   c									  a   x
-//	   / \		 leftRotate<-------------			 / \
-//    a   b											b   c
+//	    y   c                                     a   x
+//	   / \		 leftRotate<-------------		     / \
+//    a   b                                         b   c
 
 bool sbtree::rightRotate(sbTreeNode*& cur) {
 	

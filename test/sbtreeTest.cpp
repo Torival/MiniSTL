@@ -44,16 +44,16 @@ int main() {
 
     }
 
-
+    cout <<"set/sbtree\tinsert\terase\tfind\t"<<endl;
     for(int j = 0; j < 2; ++j) {
         if(j == 0) 
-            cout <<"set\t";
+            cout <<"set\t\t";
         else
-            cout <<"sbtree\t";
+            cout <<"sbtree\t\t";
 
-        cout << finish[i][0] - start[i][0] << "   " <<
-                finish[i][1] - start[i][1] << "   " <<  
-                finish[i][2] - start[i][2] << "   " <<  endl;
+        cout << finish[i][0] - start[i][0] << "\t" <<
+                finish[i][1] - start[i][1] << "\t" <<  
+                finish[i][2] - start[i][2] << "\t" <<  endl;
 
     }
 
