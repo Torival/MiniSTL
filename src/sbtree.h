@@ -1,11 +1,8 @@
-#include <set>
-#include <vector>
-#include <ctime>
-#include <iostream>
 
-using namespace std;
+#include "alloc.h"
 
-#define MAX 1000000
+MINISTL_NAMESPACE_BEGIN
+
 #define sz(node) (node == 0 ? 0 : node->size)
 
 template <class T> 
@@ -35,7 +32,8 @@ struct sbTreeNode {
 template <class T, class Alloc = default_alloc>
 class sbtree {
 public:
-
+	typedef typename sbTreeNode<T>::base_ptr base_ptr;
+	
 	sbtree();
 	~sbtree();
 	
@@ -66,29 +64,30 @@ public:
 	
 	
 private:
-	bool rightRotate(sbTreeNode*& cur);
-	bool leftRotate(sbTreeNode*& cur);
+	bool rightRotate(base_ptr& cur);
+	bool leftRotate(base_ptr& cur);
 
-	bool insert_aux(sbTreeNode*& cur, T val);
-	bool erase_aux(sbTreeNode*& cur, T val);
-	bool find_aux(sbTreeNode* cur, T val);
-	T select_aux(sbTreeNode* cur, int k);
-	int rank_aux(sbTreeNode* cur, T val);
-	T pred_aux(sbTreeNode* cur, T val);
-	T succ_aux(sbTreeNode* cur, T val);
-	void destory(sbTreeNode* cur);
+	bool insert_aux(base_ptr& cur, T val);
+	bool erase_aux(base_ptr& cur, T val);
+	bool find_aux(base_ptr cur, T val);
+	T select_aux(base_ptr cur, int k);
+	int rank_aux(base_ptr cur, T val);
+	T pred_aux(base_ptr cur, T val);
+	T succ_aux(base_ptr cur, T val);
+	void destory(base_ptr cur);
 
 private:
 
-	sbTreeNode* root;
+	base_ptr root;
 };
 
-
-sbtree::sbtree() :root(0) {
+template <class T, class Alloc>
+sbtree<T, Alloc>::sbtree() :root(0) {
 
 }
 
-sbtree ::~sbtree () {
+template <class T, class Alloc>
+sbtree<T, Alloc>::~sbtree () {
 	destory(root);
 	root = NULL;
 }
@@ -100,9 +99,10 @@ sbtree ::~sbtree () {
 //	   / \		 leftRotate<-------------		     / \
 //    a   b                                         b   c
 
-bool sbtree::rightRotate(sbTreeNode*& cur) {
+template <class T, class Alloc>
+bool sbtree<T, Alloc>::rightRotate(base_ptr& cur) {
 	
-	sbTreeNode* temp = cur->left;
+	base_ptr temp = cur->left;
 	cur->left = temp->right;
 	temp->right = cur;
 
@@ -113,8 +113,9 @@ bool sbtree::rightRotate(sbTreeNode*& cur) {
 	return true;
 }
 
-bool sbtree::leftRotate(sbTreeNode*& cur) {
-	sbTreeNode* temp = cur->right;
+template <class T, class Alloc>
+bool sbtree<T, Alloc>::leftRotate(base_ptr& cur) {
+	base_ptr temp = cur->right;
 	cur->right = temp->left;
 	temp->left = cur;
 
@@ -125,10 +126,11 @@ bool sbtree::leftRotate(sbTreeNode*& cur) {
 	return true;
 }
 
-bool sbtree::insert_aux(sbTreeNode*& cur, T val){
+template <class T, class Alloc>
+bool sbtree<T, Alloc>::insert_aux(base_ptr& cur, T val){
 	
 	if (cur == NULL) {
-		cur = new sbTreeNode(val);
+		cur = new sbTreeNode<T>(val);
 	} else {
 		cur->size++;
 		if (cur->val > val){
@@ -156,7 +158,8 @@ bool sbtree::insert_aux(sbTreeNode*& cur, T val){
 	return true;
 }
 
-bool sbtree::erase_aux(sbTreeNode*& cur, T val){
+template <class T, class Alloc>
+bool sbtree<T, Alloc>::erase_aux(base_ptr& cur, T val){
 	if(cur == NULL)
 		return false;
 
@@ -170,7 +173,7 @@ bool sbtree::erase_aux(sbTreeNode*& cur, T val){
 			cur = cur->right;
 		// 找到右子树中的最小节点，替换删除了的父节点
 		} else{
-			sbTreeNode temp = *getmin(cur->right);
+			sbTreeNode<T> temp = *sbTreeNode<T>::getmin(cur->right);
 			erase_aux(cur->right, temp.val);
 			temp.left = cur->left;
 			temp.right = cur->right;
@@ -186,7 +189,8 @@ bool sbtree::erase_aux(sbTreeNode*& cur, T val){
 	return true;
 }
 
-bool sbtree::find_aux(sbTreeNode* cur, T val) {
+template <class T, class Alloc>
+bool sbtree<T, Alloc>::find_aux(base_ptr cur, T val) {
 	while (cur != NULL) {
 		if (cur->val == val)
 			return true;
@@ -199,7 +203,8 @@ bool sbtree::find_aux(sbTreeNode* cur, T val) {
 	return false;
 }
 
-T sbtree::select_aux(sbTreeNode* cur, int k){
+template <class T, class Alloc>
+T sbtree<T, Alloc>::select_aux(base_ptr cur, int k){
 	//Select K 大于SBT的个数
 	if (cur->size < k)
 		return -1;
@@ -214,7 +219,8 @@ T sbtree::select_aux(sbTreeNode* cur, int k){
 	return -1;
 }
 
-int sbtree::rank_aux(sbTreeNode* cur, T val){
+template <class T, class Alloc>
+int sbtree<T, Alloc>::rank_aux(base_ptr cur, T val){
 	if (cur->val == val)
 		return sz(cur->left) + 1;
 	else if (cur->val > val)
@@ -226,10 +232,13 @@ int sbtree::rank_aux(sbTreeNode* cur, T val){
 }
 
 
-void sbtree::destory(sbTreeNode* cur){
+template <class T, class Alloc>
+void sbtree<T, Alloc>::destory(base_ptr cur){
 	if (cur != NULL) {
 		destory(cur->left);
 		destory(cur->right);
 		delete cur;
 	}
 }
+
+MINISTL_NAMESPACE_END
