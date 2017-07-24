@@ -15,13 +15,13 @@ int main() {
 
     set<int> s;
     sbtree<int> sb;
-	clock_t start[2][3], finish[2][3];
-	string s1 = "";
-	string s2 = "";
-	vector<int> vec;
-	int size = TESTCOUNT;
-	
-	vec = getrandom(size);
+    clock_t start[2][3], finish[2][3];
+    string s1 = "";
+    string s2 = "";
+    vector<int> vec;
+    int size = TESTCOUNT;
+    
+    vec = getrandom(size);
 
     for(int j = 0; j < 2; ++j) {
         start[j][0] = clock();
@@ -37,10 +37,10 @@ int main() {
         for (int i = 0; i < size; ++i){
             if(j == 0)
                 if(s.find(vec[i]) != s.end())
-					s1+= "1";
+                    s1+= "1";
             else
                 if(sb.find(vec[i]))
-					s2+= "1";
+                    s2+= "1";
         }   
         finish[j][1] = clock();
 
@@ -68,8 +68,8 @@ int main() {
 
     }
 
-	cout << s1.size() << ","<<s2.size();
-	return 0;
+    cout << s1.size() << ","<<s2.size();
+    return 0;
 }
 
 
@@ -78,10 +78,10 @@ vector<int> getrandom(int size){
     
      vector<int> result(size);
     for(int i = 0; i < result.size(); ++i)
-    	result[i] = i;
-    	
+        result[i] = i;
+        
     for(int i = 0; i < result.size() - 1; ++i)
-    	swap(result[i], result[i + rand() %(size - i)]);
+        swap(result[i], result[i + rand() %(size - i)]);
     
-	return result;
+    return result;
 }
