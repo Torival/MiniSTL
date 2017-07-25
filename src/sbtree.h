@@ -1,4 +1,5 @@
 
+#include <iostream>
 #include "alloc.h"
 
 MINISTL_NAMESPACE_BEGIN
@@ -17,14 +18,14 @@ struct sbTreeNode {
     sbTreeNode(T _val) :left(0), right(0), size(1) { val = _val; }
 
     static base_ptr getmax(base_ptr cur){
-        while(cur->left != NULL)
-            cur = cur->left;
+        while(cur->right != NULL)
+            cur = cur->right;
         return cur;
     }
 
     static base_ptr getmin(base_ptr cur) {
-        while(cur->right != NULL)
-            cur = cur->right;
+        while(cur->left != NULL)
+            cur = cur->left;
         return cur;
     }
 };
@@ -82,7 +83,7 @@ private:
 };
 
 template <class T, class Alloc>
-sbtree<T, Alloc>::sbtree() :root(0) {
+sbtree<T, Alloc>::sbtree() :root(NULL) {
 
 }
 
@@ -162,7 +163,7 @@ template <class T, class Alloc>
 bool sbtree<T, Alloc>::erase_aux(base_ptr& cur, T val){
     if(cur == NULL)
         return false;
-
+        
     cur->size -= 1;
     if(cur->val == val){
         // 右支为空
@@ -170,7 +171,7 @@ bool sbtree<T, Alloc>::erase_aux(base_ptr& cur, T val){
             cur = cur->left;
         // 左支为空
         } else if(cur->left == NULL) {
-            cur = cur->right;
+			cur = cur->right;
         // 找到右子树中的最小节点，替换删除了的父节点
         } else{
             sbTreeNode<T> temp = *sbTreeNode<T>::getmin(cur->right);
@@ -180,18 +181,19 @@ bool sbtree<T, Alloc>::erase_aux(base_ptr& cur, T val){
             *cur = temp;
         }
 
-    }
-
-    if(cur->val > val)
-        erase_aux(cur->right, val);
-    else
-        erase_aux(cur->left, val);
+    } else {
+		if(cur->val > val)
+	        erase_aux(cur->left, val);
+	    else
+	        erase_aux(cur->right, val);
+	}
+    
     return true;
 }
 
 template <class T, class Alloc>
 bool sbtree<T, Alloc>::find_aux(base_ptr cur, T val) {
-    while (cur != NULL) {
+	while (cur != NULL) {
         if (cur->val == val)
             return true;
         else if (cur->val > val)
