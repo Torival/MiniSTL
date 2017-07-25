@@ -2,9 +2,19 @@
 #include <vector>
 #include <ctime>
 #include <iostream>
+#include <algorithm>
+#include <string>
 #include "../src/sbtree.h"
 
-using namespace std;
+using std::set;
+using std::vector;
+using std::string;
+
+using std::cout;
+using std::endl;
+
+using std::swap;
+
 using mini_STL::sbtree; 
 
 

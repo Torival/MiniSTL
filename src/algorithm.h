@@ -1,7 +1,6 @@
 #ifndef __MINISTL_ALGORITHM_H
 #define __MINISTL_ALGORITHM_H
 
-#include "config.h"
 #include "iterator.h"
 
 MINISTL_NAMESPACE_BEGIN

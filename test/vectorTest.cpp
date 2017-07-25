@@ -2,28 +2,24 @@
 #include <string>
 #include <ctime>
 
-//#include <vector>
-
-#include "../src/vector.h"
-
 using std::cout;
 using std::endl;
 using std::string;
 
+//#include <vector>
+//#define vector std::vector
+
+#include "../src/vector.h"
+#define vector mini_STL::vector
 
 void test(string str);
 
 int main() {
-
-//#ifndef __VECTOR_
-//#define vector std::vector
+	
 //    test("STL::vector");
-//#endif
 
-#ifndef __VECTOR_
-#define vector mini_STL::vector
     test("mini_STL::vector");
-#endif
+    
     return 0;
 }
 

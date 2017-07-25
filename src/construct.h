@@ -7,7 +7,6 @@
 
 #include <new>
 #include "type_traits.h"
-#include "config.h"
 #include "iterator.h"
 
 MINISTL_NAMESPACE_BEGIN

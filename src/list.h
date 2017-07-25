@@ -1,7 +1,7 @@
 #ifndef __MINISTL_LIST_H
 #define __MINISTL_LIST_H
 
-#include "config.h"
+#include "alloc.h"
 
 MINISTL_NAMESPACE_BEGIN
 
