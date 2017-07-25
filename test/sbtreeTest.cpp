@@ -8,7 +8,7 @@ using namespace std;
 using mini_STL::sbtree; 
 
 
-// 给定一个正整数n，需要输出一个长度为n的数组，数组元素是随机数，范围为0 – n-1，且元素不能重复。
+// 获取一个长度为 size 的数组，数组元素是随机数，范围为1 – n，且元素不重复。
 vector<int> getrandom(int size);
 
 int main() {

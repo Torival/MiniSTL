@@ -1,4 +1,5 @@
-
+#ifndef __MINISTL_SBTREE_H
+#define __MINISTL_SBTREE_H
 #include <iostream>
 #include "alloc.h"
 
@@ -244,3 +245,5 @@ void sbtree<T, Alloc>::destory(base_ptr cur){
 }
 
 MINISTL_NAMESPACE_END
+
+#endif
