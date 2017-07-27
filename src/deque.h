@@ -79,7 +79,7 @@ template <class T>
 void deque_iterator<T>::set_node(map_pointer new_node){
     node = new_node;
     first = *new_node;
-    last = first + difference_type(deque_table_size());
+    last = first + difference_type(deque_table_size(sizeof(T)));
 }
 
 template <class T>
@@ -122,8 +122,8 @@ deque_iterator& deque_iterator<T>::operator+=(difference_type n){
         cur += n;
     } else {
         n -= last - cur - 1;
-        set_node(node + 1 + n / deque_table_size());
-        cur = first + n % deque_table_size();
+        set_node(node + 1 + n / deque_table_size(sizeof(T)));
+        cur = first + n % deque_table_size(sizeof(T));
     }
     return *this;
 }
@@ -134,8 +134,8 @@ deque_iterator& deque_iterator<T>::operator-=(difference_type n){
         cur -= n;
     } else {
         n -= cur - last;
-        set_node(node - 1 - n / deque_table_size());
-        cur = last - 1 - n % deque_table_size();
+        set_node(node - 1 - n / deque_table_size(sizeof(T)));
+        cur = last - 1 - n % deque_table_size(sizeof(T));
     }
     return *this;
 }
@@ -147,15 +147,15 @@ deque_iterator  deque_iterator<T>::operator-(difference_type n){
         it.cur -= n;
     } else {
         n -= it.cur - it.last;
-        set_node(it.node - 1 - n / deque_table_size());
-        it.cur = it.last - 1 - n % deque_table_size();
+        set_node(it.node - 1 - n / deque_table_size(sizeof(T)));
+        it.cur = it.last - 1 - n % deque_table_size(sizeof(T));
     }
     return it;
 }
 
 template <class T>
 difference_type deque_iterator<T>::operator-(const deque_iterator& it){
-    return (node - it.node)*deque_table_size + (cur - it.cur);
+    return (node - it.node)*deque_table_size(sizeof(T)) + (cur - it.cur);
 }
 
 template <class T>
@@ -165,8 +165,8 @@ deque_iterator  deque_iterator<T>::operator+(difference_type n){
         it.cur += n;
     } else {
         n -= it.last - it.cur - 1;
-        set_node(it.node + 1 + n / deque_table_size());
-        it.cur = it.first + n % deque_table_size();
+        set_node(it.node + 1 + n / deque_table_size(sizeof(T)));
+        it.cur = it.first + n % deque_table_size(sizeof(T));
     }
     return it;
 }
@@ -177,30 +177,18 @@ inline deque_iterator<T> operator+(ptrdiff_t n, const deque_iterator& it) {
 }
 
 template <class T, class Alloc = default_alloc>
-class deque{
-public:    
-    typedef typename deque_iterator<T> iterator;
-
-    typedef T           value_type;
-    typedef T*          pointer;
-    typedef T&          reference;
-    typedef size_t      size_type;
-    typedef ptrdiff_t   difference_type;
-    
+class deque_base{
 public:
-    deque()
-    iterator begin()
-    {   return start;   }
-    iterator end()
-    {   return finish;  }
+    deque_base():map(0), map_size(0), start(), finish() {}
+    deque_base(size_t num):map(0), map_size(0), start(), finish() 
+    {   initialize_map(num);  }
+    ~deque_base();
 
-
-private:
     // 构造，销毁table
     T*   allocate_node()
-    {   return node_allocator::allocate(deque_table_size(T));   }
+    {   return node_allocator::allocate(deque_table_size(sizeof(T)));   }
     void deallocate_node(T* ptr)
-    {   node_allocator::deallocate(ptr, deque_table_size(T));   }
+    {   node_allocator::deallocate(ptr, deque_table_size(sizeof(T)));   }
     
     // 构造，销毁map
     T**  allocate_map(size_t n)
@@ -220,20 +208,47 @@ private:
     typedef simple_alloc<T, default_alloc>  map_allocator;
 
 private:
+    T**      map;
+    size_t   map_size; 
     iterator start;
     iterator finish;
 };
 
 template <class T, class Alloc>
-void deque<T, Alloc>::create_nodes(T** start, T** finish){
+void deque_base<T, Alloc>::create_nodes(T** start, T** finish){
     for( ; start != finish; ++start)
         *start = allocate_node();
 }
 
 template <class T, class Alloc>
-void deque<T, Alloc>::destroy_nodes(T** start, Tp** finish){
+void deque_base<T, Alloc>::destroy_nodes(T** start, Tp** finish){
     for( ; start ! finish; ++start)
         deallocate_node(*start);
+}
+
+template <class T, class Alloc>
+void deque_base<T, Alloc>::initialize_map(size_t num){
+    size_t node_count = num / deque_table_size(sizeof(T)) + 1;
+    map_size = max(initial_map_size, node_count + 2);
+    map = map_allocator::allocate(map_size);
+
+    start = map + (map - node_count) / 2;
+    finish = start + node_count;
+
+    create_nodes(start, finish);
+    start.set_node(start);
+    finish.set_node(finish - 1);
+    start.cur = start.first;
+    finish.cur = finish.first + num % deque_table_size(sizeof(T));
+
+}
+
+template <class T, class Alloc>
+deque_base<T, Alloc>::~deque_base() {
+    if(map){
+        destroy_nodes(start.node, finish.node + 1);
+        deallocate_map(map, map_size);
+    }
 }
 MINISTL_NAMESPACE_END
 
